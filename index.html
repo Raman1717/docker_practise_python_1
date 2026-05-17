@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User App</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Add User</h2>
+
+    <input type="text" id="name" placeholder="Enter Name">
+    <input type="email" id="email" placeholder="Enter Email">
+    <br>
+    <button onclick="addUser()">Add User</button>
+
+    <h2>Users List</h2>
+    <button onclick="getUsers()">Load Users</button>
+
+    <ul id="userList"></ul>
+
+    <script>
+        function addUser() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+
+            fetch("http://127.0.0.1:5000/add_user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, email })
+            })
+            .then(res => res.json())
+            .then(data => alert(data.message));
+        }
+
+        function getUsers() {
+            fetch("http://127.0.0.1:5000/get_users")
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("userList");
+                list.innerHTML = "";
+
+                data.forEach(user => {
+                    const li = document.createElement("li");
+                    li.textContent = user.name + " - " + user.email;
+                    list.appendChild(li);
+                });
+            });
+        }
+    </script>
+
+</body>
+</html> 
